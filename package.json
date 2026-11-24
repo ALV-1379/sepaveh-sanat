@@ -1,0 +1,1 @@
+{"name":"sepaveh-sanat","private":true,"workspaces":["frontend","backend"],"engines":{"node":">=22.12"},"scripts":{"build":"npm run build -w frontend","test":"npm test -w backend && npm test -w frontend","lint":"eslint ."},"devDependencies":{"eslint":"^9.39.0","globals":"^16.5.0"},"overrides":{"@prisma/config":{"effect":"3.22.5"}}}

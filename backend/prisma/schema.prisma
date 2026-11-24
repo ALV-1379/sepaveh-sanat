@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  CONTENT_ADMIN
+  SUPER_ADMIN
+}
+enum ContentType {
+  PAGE
+  PRODUCT
+  PRODUCT_CATEGORY
+  PROJECT
+  PROJECT_CATEGORY
+  ARTICLE
+  CERTIFICATE
+  TESTIMONIAL
+  MENU
+  BANNER
+  SETTINGS
+}
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  role         Role
+  active       Boolean   @default(true)
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+}
+model Session {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+model Content {
+  id          String      @id @default(uuid())
+  type        ContentType
+  locale      String
+  slug        String
+  draft       Json
+  published   Json?
+  publishedAt DateTime?
+  updatedAt   DateTime    @updatedAt
+  @@unique([type, locale, slug])
+  @@index([type, locale, publishedAt])
+}
+model Inquiry {
+  id        String   @id @default(uuid())
+  kind      String
+  name      String
+  email     String
+  message   String
+  product   String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  @@index([kind, createdAt])
+}
+model Audit {
+  id        String   @id @default(uuid())
+  actorId   String
+  action    String
+  target   String
+  createdAt DateTime @default(now())
+  @@index([createdAt])
+}
+model Media {
+  id           String   @id @default(uuid())
+  storageKey   String   @unique
+  thumbnailKey String?
+  alternateKey String?
+  name         String
+  mime         String
+  size         Int
+  isPublic     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+model Visit {
+  id        String   @id @default(uuid())
+  path      String
+  visitor   String
+  referrer  String?
+  device    String
+  browser   String
+  createdAt DateTime @default(now())
+  @@index([createdAt])
+  @@index([visitor, createdAt])
+}
