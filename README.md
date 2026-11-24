@@ -15,6 +15,8 @@ Install Git and Docker Desktop with the WSL2 engine. Enable Docker integration f
 
 Copy `.env.example` to `.env` (`Copy-Item .env.example .env` in PowerShell or `cp .env.example .env` in Bash). Set the following values before running Compose:
 
+The Dockerfiles use anonymous public images from Microsoft Container Registry for Node.js, Amazon ECR Public for PostgreSQL, and GitHub Container Registry for unprivileged Nginx. This avoids Docker Hub authentication. The image names can be overridden with `NODE_IMAGE`, `POSTGRES_IMAGE`, and `NGINX_IMAGE` when an organization supplies an internal mirror.
+
 - Generate independent values for `POSTGRES_PASSWORD` and `JWT_SECRET`. Use a password manager or `openssl rand -hex 32` from WSL2. Keep the JWT secret at least 32 characters long.
 - Set `DATABASE_URL` to `postgresql://sepaveh:YOUR_PASSWORD@db:5432/sepaveh` with the actual URL-encoded password and matching database name and username. Hex passwords require no encoding.
 - Set `UPLOAD_HOST_DIR` to a persistent bind mount. The Linux production default is `/u01/services/sepawe/uploads`. For Windows development, use an existing directory such as `C:/Projects/sepaveh-sanat/uploads`.

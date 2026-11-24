@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:17-alpine
+    image: ${POSTGRES_IMAGE:-public.ecr.aws/docker/library/postgres:17-alpine}
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-sepaveh}
       POSTGRES_USER: ${POSTGRES_USER:-sepaveh}
@@ -19,6 +19,8 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm}
     environment:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
@@ -46,6 +48,9 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm}
+        NGINX_IMAGE: ${NGINX_IMAGE:-ghcr.io/nginxinc/nginx-unprivileged:stable-alpine}
     networks: [web]
     healthcheck:
       test: ["CMD", "wget", "-Y", "off", "-qO", "/dev/null", "http://127.0.0.1:8080/"]
@@ -54,7 +59,7 @@ services:
       retries: 12
     restart: unless-stopped
   nginx:
-    image: nginxinc/nginx-unprivileged:stable-alpine
+    image: ${NGINX_IMAGE:-ghcr.io/nginxinc/nginx-unprivileged:stable-alpine}
     ports:
       - "127.0.0.1:${WEB_PORT:-8080}:8080"
     volumes:

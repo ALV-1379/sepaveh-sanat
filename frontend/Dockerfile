@@ -1,4 +1,7 @@
-FROM node:22-bookworm-slim AS development
+ARG NODE_IMAGE=mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm
+ARG NGINX_IMAGE=ghcr.io/nginxinc/nginx-unprivileged:stable-alpine
+FROM ${NODE_IMAGE} AS development
+USER root
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY frontend/package.json frontend/package.json
@@ -11,6 +14,6 @@ CMD ["npm", "run", "dev", "-w", "frontend"]
 FROM development AS build
 RUN npm run build
 
-FROM nginxinc/nginx-unprivileged:stable-alpine AS production
+FROM ${NGINX_IMAGE} AS production
 COPY --chmod=644 infrastructure/nginx/frontend.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/frontend/dist /usr/share/nginx/html
