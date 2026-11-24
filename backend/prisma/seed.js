@@ -6,7 +6,7 @@ import { hashPassword } from '../src/modules/auth.js';
 const imageId = '0ba43fbd-5697-464a-a16f-1758489ac4cf';
 const storageKey = 'images/' + imageId + '.webp';
 const image = '/api/public/media/' + imageId;
-const seedVersion = 2;
+const seedVersion = 3;
 const legacySeedTitles = new Set([
   'Industrial solutions.\nBuilt with precision.',
   'راهکارهای صنعتی،\nساخته‌شده با دقت',
@@ -25,8 +25,11 @@ const examples = {
       { slug: 'indirect-stone-dryer', title: 'Indirect stone dryer', summary: 'High-efficiency drying equipment for slabs, blocks, and stone production lines.' },
       { slug: 'radiant-furnace', title: 'Radiant heating furnace', summary: 'Gas or electric radiant heating with controlled, even heat distribution.' },
       { slug: 'industrial-ventilation-fans', title: 'Industrial ventilation fans', summary: 'Supply and exhaust fans for industrial and general ventilation applications.' },
+      { slug: 'slab-dryer', title: 'Slab stone dryer', summary: 'Uniform and controlled drying for resin, mesh, and finishing stages.' },
+      { slug: 'block-dryer', title: 'Stone block dryer', summary: 'Heavy-duty indirect heating designed for large stone blocks and demanding shifts.' },
+      { slug: 'production-line-dryer', title: 'Continuous production-line dryer', summary: 'A configurable drying tunnel for continuous, high-capacity stone processing.' },
     ],
-    projectNames: ['Jahan Sang stoneworks dryer', 'Yaghout stoneworks dryer', 'Valiasr stoneworks dryer'],
+    projectNames: ['Jahan Sang stoneworks dryer', 'Yaghout stoneworks dryer', 'Valiasr stoneworks dryer', 'Shahin Stone heating line', 'Negin Sang slab dryer', 'Parseh Stone ventilation system'],
     contact: 'Contact our team', quote: 'Request a quotation', privacy: 'Privacy policy',
     contactBody: 'Address: Mahmoudabad Industrial Estate, Isfahan, Iran\nConsultation and orders: +98 919 241 4110\nEmail: info@sepavehsanat.com',
     privacyBody: 'Contact details are collected when you submit an inquiry. Optional analytics collect page paths, device category, and an anonymous browser identifier. You can change your choice at any time.',
@@ -40,8 +43,11 @@ const examples = {
       { slug: 'indirect-stone-dryer', title: 'خشک‌کن غیرمستقیم سنگ', summary: 'تجهیزات کم‌مصرف و پربازده برای خشک‌کردن اسلب، کوپ و خطوط تولید سنگ.' },
       { slug: 'radiant-furnace', title: 'کوره گرمایشی تابشی', summary: 'گرمایش تابشی گازی یا برقی با توزیع یکنواخت و کنترل‌شده حرارت.' },
       { slug: 'industrial-ventilation-fans', title: 'فن‌های تهویه صنعتی', summary: 'فن‌های مکنده و دمنده برای کاربردهای صنعتی و عمومی.' },
+      { slug: 'slab-dryer', title: 'خشک‌کن سنگ اسلب', summary: 'خشک‌کردن یکنواخت و کنترل‌شده برای مراحل رزین، توری و پرداخت سنگ.' },
+      { slug: 'block-dryer', title: 'خشک‌کن سنگ کوپ', summary: 'گرمایش غیرمستقیم صنعتی برای کوپ‌های بزرگ و شیفت‌های کاری سنگین.' },
+      { slug: 'production-line-dryer', title: 'خشک‌کن تونلی خط تولید', summary: 'تونل خشک‌کن قابل تنظیم برای خطوط پیوسته و ظرفیت بالای فرآوری سنگ.' },
     ],
-    projectNames: ['خشک‌کن سنگبری جهان سنگ', 'خشک‌کن سنگبری یاقوت', 'خشک‌کن سنگبری ولیعصر'],
+    projectNames: ['خشک‌کن سنگبری جهان سنگ', 'خشک‌کن سنگبری یاقوت', 'خشک‌کن سنگبری ولیعصر', 'خط گرمایش شاهین سنگ', 'خشک‌کن اسلب نگین سنگ', 'سامانه تهویه پارسه سنگ'],
     contact: 'ارتباط با ما', quote: 'درخواست پیش‌فاکتور', privacy: 'سیاست حریم خصوصی',
     contactBody: 'آدرس: اصفهان، شهرک صنعتی محمودآباد، شرکت سپاوه صنعت نقش جهان\nتلفن مشاوره و سفارش: ۰۹۱۹ ۲۴۱ ۴۱۱۰\nایمیل: info@sepavehsanat.com',
     privacyBody: 'اطلاعات تماس هنگام ارسال درخواست دریافت می‌شود. تحلیل اختیاری شامل مسیر صفحه، نوع دستگاه و شناسه ناشناس مرورگر است. می‌توانید انتخاب خود را تغییر دهید.',
@@ -87,6 +93,14 @@ try {
       image,
       seoTitle: locale === 'fa-IR' ? 'خشک‌کن سنگ و تجهیزات گرمایشی | سپاوه صنعت نقش جهان' : 'Stone drying and industrial heating | Sepaveh Sanat Naghsh Jahan',
       seoDescription: copy.summary,
+      blocks: [
+        { id: '10000000-0000-4000-8000-000000000001', type: 'statistics', enabled: true, title: locale === 'fa-IR' ? 'تجربه‌ای که به تولید شما سرعت می‌دهد' : 'Experience that accelerates production', items: locale === 'fa-IR' ? [{ title: '+۱۲ سال', body: 'تجربه تخصصی' }, { title: '+۱۲۰', body: 'پروژه صنعتی' }, { title: '۲۴/۷', body: 'پشتیبانی فنی' }] : [{ title: '12+ years', body: 'Specialist experience' }, { title: '120+', body: 'Industrial projects' }, { title: '24/7', body: 'Technical support' }] },
+        { id: '10000000-0000-4000-8000-000000000002', type: 'features', enabled: true, title: locale === 'fa-IR' ? 'چرا سپاوه صنعت؟' : 'Why Sepaveh Sanat?', items: locale === 'fa-IR' ? [{ title: 'مصرف انرژی بهینه', body: 'طراحی مهندسی برای کاهش اتلاف حرارت' }, { title: 'ساخت سفارشی', body: 'متناسب با ابعاد و ظرفیت خط شما' }, { title: 'خدمات کامل', body: 'از مشاوره تا نصب و پشتیبانی' }] : [{ title: 'Energy efficient', body: 'Engineered to reduce heat loss' }, { title: 'Made to fit', body: 'Matched to your line and capacity' }, { title: 'End-to-end service', body: 'From consultation to ongoing support' }] },
+        { id: '10000000-0000-4000-8000-000000000003', type: 'products', enabled: true, title: locale === 'fa-IR' ? 'محصولات منتخب' : 'Featured products' },
+        { id: '10000000-0000-4000-8000-000000000004', type: 'projects', enabled: true, title: locale === 'fa-IR' ? 'پروژه‌های اجراشده' : 'Selected projects' },
+        { id: '10000000-0000-4000-8000-000000000005', type: 'testimonials', enabled: true, title: locale === 'fa-IR' ? 'اعتماد صنعتگران' : 'Trusted by industry' },
+        { id: '10000000-0000-4000-8000-000000000006', type: 'cta', enabled: true, title: locale === 'fa-IR' ? 'برای ارتقای خط تولید آماده‌اید؟' : 'Ready to upgrade your production line?', body: locale === 'fa-IR' ? 'کارشناسان ما برای بررسی نیاز و ارائه راهکار کنار شما هستند.' : 'Our specialists are ready to assess your needs and propose the right solution.' },
+      ],
     });
     await add(locale, 'PAGE', 'about', { title: copy.about, body: copy.aboutBody });
     await add(locale, 'PAGE', 'contact', { title: copy.contact, body: copy.contactBody });
@@ -104,8 +118,22 @@ try {
       await add(locale, 'PRODUCT', product.slug, { title: product.title, summary: product.summary, image, category: 'industrial-heating' });
     }
     for (const [index, title] of copy.projectNames.entries()) {
-      await add(locale, 'PROJECT', ['jahan-sang', 'yaghout', 'valiasr'][index], { title, image, location: locale === 'fa-IR' ? 'ایران' : 'Iran' });
+      await add(locale, 'PROJECT', ['jahan-sang', 'yaghout', 'valiasr', 'shahin-stone', 'negin-stone', 'parseh-stone'][index], { title, image, location: locale === 'fa-IR' ? 'اصفهان، ایران' : 'Isfahan, Iran', completedAt: `202${index % 5}-0${(index % 8) + 1}-15`, client: title, summary: locale === 'fa-IR' ? 'طراحی، ساخت، نصب و راه‌اندازی کامل توسط تیم سپاوه صنعت.' : 'Complete design, fabrication, installation, and commissioning by Sepaveh Sanat.' });
     }
+    const articles = locale === 'fa-IR' ? [
+      ['stone-drying-guide', 'راهنمای انتخاب خشک‌کن سنگ', 'ظرفیت، نوع سوخت و ابعاد خط تولید سه عامل اصلی انتخاب یک خشک‌کن صنعتی هستند.'],
+      ['reduce-energy-consumption', '۵ راه کاهش مصرف انرژی در سنگبری', 'عایق‌کاری، کنترل هوشمند دما و سرویس دوره‌ای می‌تواند هزینه انرژی را به شکل محسوسی کاهش دهد.'],
+      ['radiant-heating-benefits', 'مزایای گرمایش تابشی در صنعت', 'گرمایش تابشی، حرارت را یکنواخت و مستقیم به سطح هدف می‌رساند و اتلاف انرژی را محدود می‌کند.'],
+    ] : [
+      ['stone-drying-guide', 'How to choose a stone dryer', 'Capacity, fuel type, and production-line dimensions are the three key factors in selecting an industrial dryer.'],
+      ['reduce-energy-consumption', 'Five ways to reduce stoneworks energy use', 'Insulation, smart temperature control, and preventive maintenance can significantly reduce energy costs.'],
+      ['radiant-heating-benefits', 'Benefits of radiant heating in industry', 'Radiant systems deliver even heat directly to the target surface and limit wasted energy.'],
+    ];
+    for (const [slug, title, summary] of articles) await add(locale, 'ARTICLE', slug, { title, summary, body: summary, image });
+    const testimonials = locale === 'fa-IR' ? [['jahan-sang-review', 'مدیریت جهان سنگ', 'کیفیت خشک‌کردن یکنواخت شد و زمان توقف خط کاهش پیدا کرد.'], ['yaghout-review', 'مدیریت سنگبری یاقوت', 'تیم فنی از طراحی تا راه‌اندازی دقیق و پاسخگو بود.'], ['valiasr-review', 'مدیریت سنگبری ولیعصر', 'مصرف انرژی پس از نصب سیستم جدید به شکل قابل‌توجهی بهبود یافت.']] : [['jahan-sang-review', 'Jahan Sang management', 'Drying became consistent and production-line downtime was reduced.'], ['yaghout-review', 'Yaghout Stoneworks management', 'The technical team was precise and responsive from design through commissioning.'], ['valiasr-review', 'Valiasr Stoneworks management', 'Energy performance improved significantly after installing the new system.']];
+    for (const [slug, title, body] of testimonials) await add(locale, 'TESTIMONIAL', slug, { title, body });
+    for (const [index, title] of (locale === 'fa-IR' ? ['گواهی کیفیت ساخت', 'گواهی ایمنی تجهیزات', 'گواهی رضایت مشتریان'] : ['Manufacturing quality certificate', 'Equipment safety certificate', 'Customer satisfaction certificate']).entries()) await add(locale, 'CERTIFICATE', `certificate-${index + 1}`, { title, image, summary: locale === 'fa-IR' ? 'مدرک نمونه جهت نمایش در نسخه آزمایشی وب‌سایت.' : 'Sample credential for the website demonstration.' });
+    await add(locale, 'BANNER', 'consultation', { title: locale === 'fa-IR' ? 'مشاوره تخصصی رایگان' : 'Free specialist consultation', summary: locale === 'fa-IR' ? 'پیش از خرید، ظرفیت و نیاز خط تولید شما را بررسی می‌کنیم.' : 'We assess your line capacity and requirements before purchase.', image });
   }
   if (process.env.NODE_ENV === 'development') {
     const email = process.env.DEMO_ADMIN_EMAIL;
