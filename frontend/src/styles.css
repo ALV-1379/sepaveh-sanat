@@ -18,7 +18,7 @@ h3{font-size:1.2rem}
 .site-header nav{display:flex;align-items:center;gap:1.35rem;margin-inline:auto;color:#d2dae1;font-size:.91rem}
 .site-header nav a:hover,.site-header nav .active{color:#ffad69}
 .language{flex:none;display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem}
-.menu-toggle{display:none}
+.menu-toggle,.mobile-cta{display:none}
 .button{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;min-height:43px;padding:.64rem 1rem;border-radius:4px;border:1px solid transparent;font-weight:700;font-size:.88rem;text-align:center}
 .primary{color:#171e23;background:#ff9847;border-color:#ff9847}
 .primary:hover{background:#ffac70}
@@ -75,7 +75,7 @@ footer{background:#101b25;color:#d2dae1}
 .editor .surface{display:grid;gap:.7rem}
 .login{max-width:440px;margin:10vh auto;padding-inline:1rem}
 .stat{font-size:2rem;font-weight:800}
-@media(max-width:1120px){.header-inner{gap:1rem}.menu-toggle{display:block;margin-inline-start:auto}.site-header nav{display:none;position:absolute;z-index:2;top:100%;inset-inline:0;background:#101b25;padding:1rem 1.5rem;flex-wrap:wrap}.site-header nav.open{display:flex}.header-cta{display:none}}
+@media(max-width:1120px){.header-inner{gap:1rem}.menu-toggle{display:block;margin-inline-start:auto}.mobile-cta{display:inline-flex}.site-header nav{display:none;position:absolute;z-index:2;top:100%;inset-inline:0;background:#101b25;padding:1rem 1.5rem;flex-wrap:wrap}.site-header nav.open{display:flex}.header-cta{display:none}}
 @media(max-width:640px){.container{width:calc(100% - 2rem)}.hero{min-height:490px}.hero-inner{padding-block:3rem 5rem}.scroll-indicator{inset-inline-end:1rem}.section{padding-block:2.5rem}.section-head{align-items:start;flex-direction:column}.admin-shell{grid-template-columns:minmax(0,1fr)}.admin-shell nav{display:flex;flex-wrap:wrap}.admin-shell main{padding:1rem}}
 .home-loading{min-height:850px}
 .home-products{min-height:365px}

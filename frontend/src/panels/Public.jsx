@@ -131,13 +131,14 @@ export function PublicSite() {
   else if (data) body = <Detail {...{ data, locale, fa, route, slug, query }} />;
   else body = <NotFound {...{ fa, home }} />;
   const notice = banner.data?.entries[0]?.published;
+  const quoteLabel = fa ? 'درخواست پیش‌فاکتور' : 'Get a quote';
   return <div className="public-site" style={appearance?.accent ? { '--site-accent': appearance.accent } : undefined}>
     <header className="site-header"><div className="container header-inner">
       <Link className="brand" to={home}><span>{appearance?.image ? <img src={appearance.image} width="38" height="38" alt="" /> : <Factory size={24} />}</span>{brand}</Link>
       <button className="menu-toggle" aria-expanded={menu} aria-label={fa ? 'منو' : 'Menu'} onClick={() => setMenu(!menu)}><Menu /></button>
-      <nav className={menu ? 'open' : ''} aria-label={fa ? 'منوی اصلی' : 'Main navigation'}>{links.map(([target, label]) => <NavLink key={target} to={publicPath(locale, target)} end={!target} onClick={() => setMenu(false)}>{label}</NavLink>)}</nav>
+      <nav className={menu ? 'open' : ''} aria-label={fa ? 'منوی اصلی' : 'Main navigation'}>{links.map(([target, label]) => <NavLink key={target} to={publicPath(locale, target)} end={!target} onClick={() => setMenu(false)}>{label}</NavLink>)}{!links.some(([target]) => target === 'quote') && <NavLink className="mobile-cta" to={publicPath(locale, 'quote')} onClick={() => setMenu(false)}>{quoteLabel}</NavLink>}</nav>
       <Link className="language" to={publicPath(fa ? 'en-US' : 'fa-IR', path) + (query.size ? '?' + query : '')}><Globe2 size={16} /> {fa ? 'EN' : 'FA'}</Link>
-      <Link className="button primary header-cta" to={publicPath(locale, 'quote')}>{fa ? 'درخواست پیش‌فاکتور' : 'Get a quote'}</Link>
+      <Link className="button primary header-cta" to={publicPath(locale, 'quote')}>{quoteLabel}</Link>
     </div></header>
     {notice && <div className="site-notice"><div className="container"><strong>{notice.title}</strong>{notice.summary && <span>{notice.summary}</span>}</div></div>}
     <main>{body}</main>
