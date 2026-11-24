@@ -5,7 +5,9 @@ services:
     environment:
       NODE_ENV: development
       APP_ORIGIN: ${DEV_ORIGIN:-http://localhost:8080}
-    command: ["sh", "-c", "npm run migrate -w backend && npm run dev -w backend"]
+      DEMO_ADMIN_EMAIL: ${DEMO_ADMIN_EMAIL:-alavimohammad93@gmail.com}
+      DEMO_ADMIN_PASSWORD: ${DEMO_ADMIN_PASSWORD:-Hibye@1234512345}
+    command: ["sh", "-c", "npm run migrate -w backend && npm run seed -w backend && npm run dev -w backend"]
     volumes:
       - ./backend/src:/app/backend/src:ro
   frontend:

@@ -1,7 +1,8 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { ArrowDown, ArrowUpLeft, ArrowUpRight, Factory, Globe2, Menu } from 'lucide-react';
+import { ArrowDown, ArrowUpLeft, ArrowUpRight, Factory, Menu } from 'lucide-react';
 import { Link, NavLink, useLocation, useSearchParams } from 'react-router';
 import { useData } from '../app/api';
+import { LanguageSwitcher } from '../components/common/LanguageSwitcher';
 import { Blocks, Cards, MediaImage } from '../features/Blocks';
 import { collections, contentUrl, pages, publicPath } from '../features/catalog';
 import { trackVisit } from '../features/visits';
@@ -137,7 +138,7 @@ export function PublicSite() {
       <Link className="brand" to={home}><span>{appearance?.image ? <img src={appearance.image} width="38" height="38" alt="" /> : <Factory size={24} />}</span>{brand}</Link>
       <button className="menu-toggle" aria-expanded={menu} aria-label={fa ? 'منو' : 'Menu'} onClick={() => setMenu(!menu)}><Menu /></button>
       <nav className={menu ? 'open' : ''} aria-label={fa ? 'منوی اصلی' : 'Main navigation'}>{links.map(([target, label]) => <NavLink key={target} to={publicPath(locale, target)} end={!target} onClick={() => setMenu(false)}>{label}</NavLink>)}{!links.some(([target]) => target === 'quote') && <NavLink className="mobile-cta" to={publicPath(locale, 'quote')} onClick={() => setMenu(false)}>{quoteLabel}</NavLink>}</nav>
-      <Link className="language" to={publicPath(fa ? 'en-US' : 'fa-IR', path) + (query.size ? '?' + query : '')}><Globe2 size={16} /> {fa ? 'EN' : 'FA'}</Link>
+      <LanguageSwitcher locale={locale} path={path} query={query} />
       <Link className="button primary header-cta" to={publicPath(locale, 'quote')}>{quoteLabel}</Link>
     </div></header>
     {notice && <div className="site-notice"><div className="container"><strong>{notice.title}</strong>{notice.summary && <span>{notice.summary}</span>}</div></div>}

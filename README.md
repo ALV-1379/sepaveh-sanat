@@ -27,10 +27,11 @@ The Dockerfiles use anonymous public images from Microsoft Container Registry fo
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build --wait
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec backend npm run seed -w backend
 ```
 
-Open `http://localhost:8080/` for Persian, `/en/` for English, `/admin` for content and `/super-admin` for system administration. The seed supplies sample copy and generated factory imagery. Its upserts preserve existing entries. Source edits hot-reload. Dependency and Prisma schema edits require rebuilding the images. Containers use their own Linux dependencies.
+Open `http://localhost:8080/` for Persian, `/en/` for English, `/admin` for content and `/super-admin` for system administration. Development startup seeds editable company content based on the public information at `https://sepaveh.com/`, together with English translations and generated factory imagery. Its upserts preserve existing entries. Source edits hot-reload. Dependency and Prisma schema edits require rebuilding the images. Containers use their own Linux dependencies.
+
+The development-only Super Admin is created automatically with email `alavimohammad93@gmail.com` and password `Hibye@1234512345`. Change `DEMO_ADMIN_EMAIL` and `DEMO_ADMIN_PASSWORD` in `.env` for shared development environments. Production startup never creates this account. The admin UI uses short-lived JWT access tokens in HttpOnly cookies, rotates refresh tokens, and validates authorization on the backend.
 
 ### First administrator
 
