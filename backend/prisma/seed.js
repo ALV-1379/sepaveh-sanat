@@ -7,7 +7,7 @@ const storageKey = 'images/' + imageId + '.webp';
 const image = '/api/public/media/' + imageId;
 const examples = {
   'en-US': {
-    name: 'Sepawe Sanat', hero: 'Industrial solutions.\nBuilt with precision.',
+    name: 'Sepaveh Sanat Naghsh Jahan', hero: 'Industrial solutions.\nBuilt with precision.',
     summary: 'Explore our capabilities in steel fabrication, industrial equipment, and engineering.',
     about: 'About our company', aboutBody: 'This sample page is ready for your company profile, engineering capabilities, and team.',
     products: ['Steel structures', 'Industrial equipment', 'Precision components'], projects: 'Fabrication facility',
@@ -15,7 +15,7 @@ const examples = {
     privacyBody: 'Contact details are collected when you submit an inquiry. Optional analytics collect page paths, device category, and an anonymous browser identifier. You can change your choice at any time.',
   },
   'fa-IR': {
-    name: 'سپاوِه صنعت', hero: 'راهکارهای صنعتی،\nساخته‌شده با دقت',
+    name: 'سپاوه صنعت نقش جهان', hero: 'راهکارهای صنعتی،\nساخته‌شده با دقت',
     summary: 'با توانمندی‌های ما در ساخت سازه‌های فولادی، تجهیزات صنعتی و خدمات مهندسی آشنا شوید.',
     about: 'درباره شرکت', aboutBody: 'این صفحه نمونه برای معرفی شرکت، توانمندی‌های مهندسی و تیم شما آماده شده است.',
     products: ['سازه‌های فولادی', 'تجهیزات صنعتی', 'قطعات دقیق'], projects: 'کارگاه ساخت صنعتی',

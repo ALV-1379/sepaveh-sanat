@@ -11,13 +11,13 @@ h1{font-size:clamp(2rem,5vw,4rem);margin-block-end:1rem}
 h2{font-size:clamp(1.6rem,3vw,2.6rem)}
 h3{font-size:1.2rem}
 .container{width:min(1280px,100% - 3rem);margin-inline:auto}
-.site-header{background:#101b25;color:#f6f8fa}
+.site-header{position:relative;background:#101b25;color:#f6f8fa}
 .header-inner,.footer-inner{display:flex;align-items:center;gap:1.5rem;min-height:76px}
-.brand{display:inline-flex;align-items:center;gap:.65rem;font-size:1.12rem;font-weight:800;white-space:nowrap}
-.brand span{display:grid;place-items:center;width:38px;height:38px;background:#ff9847;color:#111820;border-radius:5px}
+.brand{display:inline-flex;align-items:center;gap:.65rem;font-size:1.12rem;font-weight:800;min-width:0;overflow-wrap:anywhere}
+.brand span{flex:none;display:grid;place-items:center;width:38px;height:38px;background:#ff9847;color:#111820;border-radius:5px}
 .site-header nav{display:flex;align-items:center;gap:1.35rem;margin-inline:auto;color:#d2dae1;font-size:.91rem}
 .site-header nav a:hover,.site-header nav .active{color:#ffad69}
-.language{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem}
+.language{flex:none;display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem}
 .menu-toggle{display:none}
 .button{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;min-height:43px;padding:.64rem 1rem;border-radius:4px;border:1px solid transparent;font-weight:700;font-size:.88rem;text-align:center}
 .primary{color:#171e23;background:#ff9847;border-color:#ff9847}
@@ -68,13 +68,15 @@ footer{background:#101b25;color:#d2dae1}
 .admin-shell nav .active,.admin-shell nav a:hover{background:#ffffff22}
 .admin-list{display:grid;gap:.6rem;margin-block:1rem}
 .admin-list li{display:flex;flex-wrap:wrap;align-items:center;gap:.7rem}
-.admin-list li span:first-child{flex:1}
-.editor{max-width:900px}
+.admin-list li span:first-child{flex:1;min-width:min(12rem,100%);overflow-wrap:anywhere}
+.admin-list code,.admin-list a,.admin-shell aside small{overflow-wrap:anywhere;min-width:0}
+.detail dd{min-width:0;overflow-wrap:anywhere}
+.editor{max-width:1120px}
 .editor .surface{display:grid;gap:.7rem}
 .login{max-width:440px;margin:10vh auto;padding-inline:1rem}
 .stat{font-size:2rem;font-weight:800}
-@media(max-width:900px){.header-inner{gap:1rem}.menu-toggle{display:block;margin-inline-start:auto}.site-header nav{display:none;position:absolute;z-index:2;top:76px;inset-inline:0;background:#101b25;padding:1rem 1.5rem;flex-wrap:wrap}.site-header nav.open{display:flex}.header-cta{display:none}}
-@media(max-width:640px){.container{width:calc(100% - 2rem)}.hero{min-height:490px}.hero-inner{padding-block:3rem 5rem}.scroll-indicator{inset-inline-end:1rem}.section{padding-block:2.5rem}.section-head{align-items:start;flex-direction:column}.admin-shell{grid-template-columns:1fr}.admin-shell nav{display:flex;flex-wrap:wrap}.admin-shell main{padding:1rem}}
+@media(max-width:1120px){.header-inner{gap:1rem}.menu-toggle{display:block;margin-inline-start:auto}.site-header nav{display:none;position:absolute;z-index:2;top:100%;inset-inline:0;background:#101b25;padding:1rem 1.5rem;flex-wrap:wrap}.site-header nav.open{display:flex}.header-cta{display:none}}
+@media(max-width:640px){.container{width:calc(100% - 2rem)}.hero{min-height:490px}.hero-inner{padding-block:3rem 5rem}.scroll-indicator{inset-inline-end:1rem}.section{padding-block:2.5rem}.section-head{align-items:start;flex-direction:column}.admin-shell{grid-template-columns:minmax(0,1fr)}.admin-shell nav{display:flex;flex-wrap:wrap}.admin-shell main{padding:1rem}}
 .home-loading{min-height:850px}
 .home-products{min-height:365px}
 @media(max-width:640px){.home-loading{min-height:850px}.home-products{min-height:650px}}
@@ -83,3 +85,5 @@ footer{background:#101b25;color:#d2dae1}
 .public-site .brand span,.public-site .primary,.public-site .hero-mark span{background:var(--site-accent,#ff9847)}
 .public-site .primary{border-color:var(--site-accent,#ff9847)}
 .public-site .primary:hover{filter:brightness(1.08)}
+
+@media(max-width:400px){.header-inner{gap:.65rem}.brand{font-size:1rem}.footer-inner{gap:1rem}.consent{inset-inline-end:1rem}}

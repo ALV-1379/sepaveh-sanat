@@ -101,7 +101,7 @@ export function PublicSite() {
   const menuContent = useData(contentUrl(locale, 'MENU', 'main'));
   const banner = useData(!route ? contentUrl(locale, 'BANNER', 'home') : null);
   const appearance = settings.data?.entries[0]?.published;
-  const brand = appearance?.title || (fa ? 'سپاوِه صنعت' : 'Sepawe Sanat');
+  const brand = appearance?.title || (fa ? 'سپاوه صنعت نقش جهان' : 'Sepaveh Sanat Naghsh Jahan');
   const content = useData(simple ? contentUrl(locale, 'PAGE', route || 'home') : listing && slug ? contentUrl(locale, listing[0], slug) : null);
   const data = content.data?.entries[0]?.published;
   const home = publicPath(locale);

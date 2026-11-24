@@ -1,4 +1,4 @@
-# Sepawe Sanat Naghsh Jahan
+# Sepaveh Sanat Naghsh Jahan
 
 React corporate website and Express/PostgreSQL CMS in one JavaScript monorepo.
 
