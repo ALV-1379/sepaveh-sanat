@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { ArrowDown, ArrowUpLeft, ArrowUpRight, Factory, Menu } from 'lucide-react';
+import { ArrowDown, ArrowUpLeft, ArrowUpRight, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
 import { Link, NavLink, useLocation, useSearchParams } from 'react-router';
-import { useData } from '../app/api';
+import { useApi } from '../app/api';
 import { LanguageSwitcher } from '../components/common/LanguageSwitcher';
 import { Blocks, Cards, MediaImage } from '../features/Blocks';
 import { collections, contentUrl, pages, publicPath } from '../features/catalog';
@@ -15,20 +15,36 @@ function Status({ fa, error, home }) {
 function NotFound({ fa, home }) {
   return <section className="container section"><h1>404</h1><p>{fa ? 'صفحه پیدا نشد.' : 'This page could not be found.'}</p><Link className="button primary" to={home}>{fa ? 'صفحه اصلی' : 'Back to home'}</Link></section>;
 }
-function Home({ data, locale, fa }) {
-  const products = useData(contentUrl(locale, 'PRODUCT'));
-  const Arrow = fa ? ArrowUpLeft : ArrowUpRight;
-  return <>
-    <section className="hero">
-      <MediaImage src={data.image} eager className="hero-image" />
+function HeroSlider({ slides, fa }) {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [playing, setPlaying] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  useEffect(() => {
+    if (!playing || paused || slides.length < 2) return undefined;
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), 6000);
+    return () => window.clearInterval(timer);
+  }, [playing, paused, slides.length]);
+  useEffect(() => setActive(0), [slides.length]);
+  const move = (step) => setActive((current) => (current + step + slides.length) % slides.length);
+  return <section className="hero-slider" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} aria-roledescription="carousel" aria-label={fa ? 'اسلایدر معرفی' : 'Featured slider'}>
+    {slides.map((slide, index) => <article className={'hero-slide ' + (active === index ? 'active' : '')} inert={active !== index} aria-hidden={active !== index} key={slide.key}>
+      <MediaImage src={slide.image} eager={index === 0} className="hero-image" />
       <div className="container hero-inner">
-        <div className="hero-mark"><span />{fa ? 'مهندسی و ساخت صنعتی' : 'Engineering & fabrication'}</div>
-        <h1>{data.title}</h1>
-        <p>{data.summary}</p>
-        <div className="actions"><Link to={publicPath(locale, 'products')} className="button primary">{fa ? 'مشاهده محصولات' : 'Explore products'} <Arrow size={18} /></Link><Link to={publicPath(locale, 'quote')} className="button outline">{fa ? 'درخواست پیش‌فاکتور' : 'Request a quotation'}</Link></div>
+        <div className="hero-mark"><span />{slide.eyebrow}</div><h1>{slide.title}</h1><p>{slide.summary}</p>
+        <div className="actions"><Link to={slide.primary.href} className="button primary">{slide.primary.label} {slide.arrow}</Link><Link to={slide.secondary.href} className="button outline">{slide.secondary.label}</Link></div>
       </div>
-      <a href="#products" className="scroll-indicator" aria-label={fa ? 'رفتن به محصولات' : 'Scroll to products'}><ArrowDown size={20} /></a>
-    </section>
+    </article>)}
+    {slides.length > 1 && <><button className="slider-control previous" onClick={() => move(-1)} aria-label={fa ? 'اسلاید قبلی' : 'Previous slide'}><ChevronRight /></button><button className="slider-control next" onClick={() => move(1)} aria-label={fa ? 'اسلاید بعدی' : 'Next slide'}><ChevronLeft /></button><div className="slider-dots">{slides.map((slide, index) => <button key={slide.key} className={active === index ? 'active' : ''} onClick={() => setActive(index)} aria-label={`${fa ? 'اسلاید' : 'Slide'} ${index + 1}`} aria-current={active === index ? 'true' : undefined} />)}</div></>}
+    {slides.length > 1 && <button className="slider-play" type="button" onClick={() => setPlaying(!playing)}>{playing ? (fa ? 'توقف اسلایدر' : 'Pause slider') : (fa ? 'پخش اسلایدر' : 'Play slider')}</button>}
+    <a href="#products" className="scroll-indicator" aria-label={fa ? 'رفتن به محصولات' : 'Scroll to products'}><ArrowDown size={20} /></a>
+  </section>;
+}
+function Home({ data, locale, fa }) {
+  const products = useApi(contentUrl(locale, 'PRODUCT'));
+  const Arrow = fa ? ArrowUpLeft : ArrowUpRight;
+  const slides = [{ key: 'home', image: data.image, title: data.title, summary: data.summary, eyebrow: fa ? 'مهندسی و ساخت صنعتی' : 'Engineering & fabrication', primary: { href: publicPath(locale, 'products'), label: fa ? 'مشاهده محصولات' : 'Explore products' }, secondary: { href: publicPath(locale, 'quote'), label: fa ? 'درخواست پیش‌فاکتور' : 'Request a quotation' }, arrow: <Arrow size={18} /> }, ...(products.data?.entries || []).slice(0, 2).map(({ slug, published }) => ({ key: slug, image: published.image || data.image, title: published.title, summary: published.summary, eyebrow: fa ? 'راهکار منتخب سپاوه صنعت' : 'Featured Sepaveh solution', primary: { href: publicPath(locale, 'products/' + slug), label: fa ? 'مشاهده جزئیات' : 'View details' }, secondary: { href: publicPath(locale, 'quote?product=' + slug), label: fa ? 'دریافت مشاوره' : 'Get advice' }, arrow: <Arrow size={18} /> }))];
+  return <>
+    <HeroSlider slides={slides} fa={fa} />
     <div className="container section home-products" id="products">
       <div className="section-head"><h2>{fa ? 'محصولات و توانمندی‌ها' : 'Products & capabilities'}</h2><Link to={publicPath(locale, 'products')}>{fa ? 'همه محصولات' : 'All products'} <Arrow size={16} /></Link></div>
       <Cards entries={products.data?.entries?.slice(0, 3)} locale={locale} collection="products" />
@@ -39,8 +55,8 @@ function Home({ data, locale, fa }) {
 function Listing({ locale, fa, collection, query, setQuery }) {
   const [type, en, persian] = collections[collection];
   const page = Number(query.get('page') || 1);
-  const result = useData(contentUrl(locale, type) + '?' + query);
-  const categories = useData(collection === 'products' ? contentUrl(locale, 'PRODUCT_CATEGORY') : null);
+  const result = useApi(contentUrl(locale, type) + '?' + query);
+  const categories = useApi(collection === 'products' ? contentUrl(locale, 'PRODUCT_CATEGORY') : null);
   function filter(key, value) {
     const next = new URLSearchParams(query);
     if (value) next.set(key, value);
@@ -98,12 +114,12 @@ export function PublicSite() {
   const [route, slug, extra] = path.split('/');
   const listing = !extra && Object.hasOwn(collections, route) && collections[route];
   const simple = !slug && (!route || Object.hasOwn(pages, route));
-  const settings = useData(contentUrl(locale, 'SETTINGS', 'site'));
-  const menuContent = useData(contentUrl(locale, 'MENU', 'main'));
-  const banner = useData(!route ? contentUrl(locale, 'BANNER', 'home') : null);
+  const settings = useApi(contentUrl(locale, 'SETTINGS', 'site'));
+  const menuContent = useApi(contentUrl(locale, 'MENU', 'main'));
+  const banner = useApi(!route ? contentUrl(locale, 'BANNER', 'home') : null);
   const appearance = settings.data?.entries[0]?.published;
   const brand = appearance?.title || (fa ? 'سپاوه صنعت نقش جهان' : 'Sepaveh Sanat Naghsh Jahan');
-  const content = useData(simple ? contentUrl(locale, 'PAGE', route || 'home') : listing && slug ? contentUrl(locale, listing[0], slug) : null);
+  const content = useApi(simple ? contentUrl(locale, 'PAGE', route || 'home') : listing && slug ? contentUrl(locale, listing[0], slug) : null);
   const data = content.data?.entries[0]?.published;
   const home = publicPath(locale);
   const links = menuContent.data?.entries[0]?.published.links?.map(({ label, target }) => [target, label]) || [['', fa ? 'صفحه اصلی' : 'Home'], ...['about', 'products', 'projects', 'news', 'contact'].map((key) => [key, pages[key]?.[fa ? 1 : 0] ?? collections[key][fa ? 2 : 1]])];
@@ -135,7 +151,7 @@ export function PublicSite() {
   const quoteLabel = fa ? 'درخواست پیش‌فاکتور' : 'Get a quote';
   return <div className="public-site" style={appearance?.accent ? { '--site-accent': appearance.accent } : undefined}>
     <header className="site-header"><div className="container header-inner">
-      <Link className="brand" to={home}><span>{appearance?.image ? <img src={appearance.image} width="38" height="38" alt="" /> : <Factory size={24} />}</span>{brand}</Link>
+      <Link className="brand brand-logo" to={home}><img src={appearance?.image || '/brand/sepaveh-logo.webp'} alt={brand} /><span className="sr-only">{brand}</span></Link>
       <button className="menu-toggle" aria-expanded={menu} aria-label={fa ? 'منو' : 'Menu'} onClick={() => setMenu(!menu)}><Menu /></button>
       <nav className={menu ? 'open' : ''} aria-label={fa ? 'منوی اصلی' : 'Main navigation'}>{links.map(([target, label]) => <NavLink key={target} to={publicPath(locale, target)} end={!target} onClick={() => setMenu(false)}>{label}</NavLink>)}{!links.some(([target]) => target === 'quote') && <NavLink className="mobile-cta" to={publicPath(locale, 'quote')} onClick={() => setMenu(false)}>{quoteLabel}</NavLink>}</nav>
       <LanguageSwitcher locale={locale} path={path} query={query} />
@@ -143,7 +159,7 @@ export function PublicSite() {
     </div></header>
     {notice && <div className="site-notice"><div className="container"><strong>{notice.title}</strong>{notice.summary && <span>{notice.summary}</span>}</div></div>}
     <main>{body}</main>
-    <footer><div className="container footer-inner"><span className="brand"><Factory size={20} /> {brand}</span><Link to={publicPath(locale, 'certificates')}>{fa ? 'گواهینامه‌ها' : 'Certificates'}</Link><Link to={publicPath(locale, 'privacy')}>{fa ? 'حریم خصوصی' : 'Privacy policy'}</Link><button onClick={() => setConsent(null)}>{fa ? 'تنظیمات تحلیل بازدید' : 'Analytics preferences'}</button></div></footer>
+    <footer><div className="container footer-inner"><Link className="brand brand-logo footer-logo" to={home}><img src={appearance?.image || '/brand/sepaveh-logo.webp'} alt={brand} /></Link><Link to={publicPath(locale, 'certificates')}>{fa ? 'گواهینامه‌ها' : 'Certificates'}</Link><Link to={publicPath(locale, 'privacy')}>{fa ? 'حریم خصوصی' : 'Privacy policy'}</Link><button onClick={() => setConsent(null)}>{fa ? 'تنظیمات تحلیل بازدید' : 'Analytics preferences'}</button></div></footer>
     {consent === null && <aside className="consent" aria-label={fa ? 'تنظیمات تحلیل بازدید' : 'Analytics preferences'}><p>{fa ? 'آیا با ثبت آمار ناشناس بازدید موافقید؟' : 'Allow anonymous site analytics?'}</p><div className="actions"><button className="button outline" onClick={() => storeConsent('no')}>{fa ? 'رد' : 'Decline'}</button><button className="button primary" onClick={() => storeConsent('yes')}>{fa ? 'موافقت' : 'Allow'}</button></div></aside>}
   </div>;
 }
