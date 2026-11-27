@@ -3,6 +3,7 @@ import { ArrowDown, ArrowUpLeft, ArrowUpRight, ChevronLeft, ChevronRight, Menu }
 import { Link, NavLink, useLocation, useSearchParams } from 'react-router';
 import { useApi } from '../app/api';
 import { LanguageSwitcher } from '../components/common/LanguageSwitcher';
+import { CatalogDownload, CatalogShowcase, EquipmentGallery } from '../components/common/CatalogShowcase';
 import { Blocks, Cards, MediaImage } from '../features/Blocks';
 import { collections, contentUrl, pages, publicPath } from '../features/catalog';
 import { trackVisit } from '../features/visits';
@@ -48,6 +49,8 @@ function Home({ data, locale, fa }) {
     <div className="container section home-products" id="products">
       <div className="section-head"><h2>{fa ? 'محصولات و توانمندی‌ها' : 'Products & capabilities'}</h2><Link to={publicPath(locale, 'products')}>{fa ? 'همه محصولات' : 'All products'} <Arrow size={16} /></Link></div>
       <Cards entries={products.data?.entries?.slice(0, 3)} locale={locale} collection="products" />
+      <CatalogShowcase fa={fa} />
+      <EquipmentGallery fa={fa} />
       <Blocks blocks={data.blocks} locale={locale} />
     </div>
   </>;
@@ -66,6 +69,7 @@ function Listing({ locale, fa, collection, query, setQuery }) {
   }
   return <section className="container section">
     <h1>{fa ? persian : en}</h1>
+    {collection === 'products' && <CatalogShowcase fa={fa} />}
     {collection === 'products' && <div className="actions filters">
       <input value={query.get('q') || ''} onChange={(e) => filter('q', e.target.value)} placeholder={fa ? 'جستجو' : 'Search products'} aria-label={fa ? 'جستجو' : 'Search products'} />
       <select value={query.get('category') || ''} onChange={(e) => filter('category', e.target.value)} aria-label={fa ? 'دسته‌بندی' : 'Category'}>
@@ -94,6 +98,7 @@ function Detail({ data, locale, fa, route, slug, query }) {
     {!!data.gallery?.length && <div className="cards">{data.gallery.map((url) => <MediaImage key={url} src={url} />)}</div>}
     <div className="actions">
       {data.catalog && <a href={data.catalog} className="button outline">{fa ? 'دانلود کاتالوگ' : 'Download catalog'}</a>}
+      {route === 'products' && !data.catalog && <CatalogDownload fa={fa} />}
       {route === 'products' && <Link className="button primary" to={publicPath(locale, 'quote?product=' + slug)}>{fa ? 'درخواست پیش‌فاکتور' : 'Request a quotation'}</Link>}
       {route === 'categories' && <Link className="button primary" to={publicPath(locale, 'products?category=' + slug)}>{fa ? 'مشاهده محصولات' : 'View products'}</Link>}
     </div>

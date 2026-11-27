@@ -6,7 +6,38 @@ import { hashPassword } from '../src/modules/auth.js';
 const imageId = '0ba43fbd-5697-464a-a16f-1758489ac4cf';
 const storageKey = 'images/' + imageId + '.webp';
 const image = '/api/public/media/' + imageId;
-const seedVersion = 3;
+const seedVersion = 4;
+// Equipment and project photographs sourced from sepaveh.com.
+const equipmentPhotos = {
+  'indirect-stone-dryer': 'khoshkon-gheirmostaghim-makhsus-sang',
+  'radiant-furnace': 'system-garmayeshi-tabeshi',
+  'industrial-ventilation-fans': 'fan-backward',
+  'production-line-dryer': 'khoshkon-gheirmostaghim-khat-tulid',
+  'jahan-sang': 'sangbori-jahansang-koore-gheiremostaghim-845x684',
+  'yaghout': 'sangbori-iaghoot-kooreh-845x684',
+  'valiasr': 'sangbori-valiasr-kooreh-khoshkkon-845x684',
+};
+const descriptions = {
+  'indirect-stone-dryer': ['سنگ روی پالت در محفظه قرار می‌گیرد و هوای گرم در اطراف آن گردش می‌کند. انتقال غیرمستقیم گرما، سنگ را از تماس مستقیم با شعله دور نگه می‌دارد.', 'Stone sits on pallets inside a chamber where warm air circulates around the load. Indirect heating keeps the stone away from direct flame.'],
+  'radiant-furnace': ['سامانه گرمایش تابشی، گرما را به سطح هدف منتقل می‌کند. نوع منبع گرما و چیدمان تجهیزات با توجه به فضای نصب و فرایند تولید انتخاب می‌شود.', 'Radiant heating transfers heat to the target surface. Heat source and equipment layout depend on the installation space and production process.'],
+  'industrial-ventilation-fans': ['فن‌های مکنده و دمنده برای تخلیه یا تأمین هوا استفاده می‌شوند. دبی هوا و افت فشار مسیر کانال در انتخاب فن اهمیت دارند.', 'Supply and exhaust fans move air into or out of industrial spaces. Airflow and duct pressure losses are important when selecting a fan.'],
+  'slab-dryer': ['این دستگاه برای خشک‌کردن اسلب پیش از مراحل رزین‌کاری و نصب توری به کار می‌رود. ابعاد اسلب و روش بارگیری در انتخاب محفظه اهمیت دارند.', 'This dryer prepares slabs for resin application and mesh backing. Slab dimensions and the loading method guide chamber selection.'],
+  'block-dryer': ['خشک‌کن کوپ برای آماده‌سازی بلوک سنگ پیش از فرایندهایی مانند تزریق مواد به ترک‌ها طراحی می‌شود. ابعاد و وزن کوپ در طراحی محفظه و بارگیری لحاظ می‌شود.', 'A block dryer prepares stone blocks for processes such as resin injection into fissures. Block size and weight inform chamber and loading design.'],
+  'production-line-dryer': ['خشک‌کن در مسیر فرآوری نصب می‌شود تا مرحله خشک‌کردن با سرعت خط هماهنگ شود. زمان ماند و دما بر اساس نوع سنگ و مراحل بعدی تعیین می‌شوند.', 'This dryer fits into the processing line so drying can keep pace with production. Residence time and temperature depend on the stone and downstream steps.'],
+};
+
+async function seedEquipmentPhotos() {
+  const photos = {};
+  for (const [index, [slug, filename]] of Object.entries(equipmentPhotos).entries()) {
+    const id = `20000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`;
+    const storageKey = `images/${id}.webp`;
+    const bytes = await readFile(new URL(`./assets/${filename}.webp`, import.meta.url));
+    await storage.put(storageKey, bytes).catch((error) => { if (error.code !== 'EEXIST') throw error; });
+    await db.media.upsert({ where: { id }, update: {}, create: { id, storageKey, name: filename, mime: 'image/webp', size: bytes.length, isPublic: true } });
+    photos[slug] = '/api/public/media/' + id;
+  }
+  return photos;
+}
 const legacySeedTitles = new Set([
   'Industrial solutions.\nBuilt with precision.',
   'راهکارهای صنعتی،\nساخته‌شده با دقت',
@@ -67,6 +98,7 @@ async function add(locale, type, slug, draft) {
 }
 try {
   await storage.initialize();
+  const photos = await seedEquipmentPhotos();
   const bytes = await readFile(new URL('./assets/factory.webp', import.meta.url));
   await storage.put(storageKey, bytes).catch((error) => { if (error.code !== 'EEXIST') throw error; });
   await db.media.upsert({ where: { id: imageId }, update: {}, create: { id: imageId, storageKey, name: 'Sample fabrication facility', mime: 'image/webp', size: bytes.length, isPublic: true } });
@@ -90,7 +122,7 @@ try {
     await add(locale, 'PAGE', 'home', {
       title: copy.hero,
       summary: copy.summary,
-      image,
+      image: photos['indirect-stone-dryer'],
       seoTitle: locale === 'fa-IR' ? 'خشک‌کن سنگ و تجهیزات گرمایشی | سپاوه صنعت نقش جهان' : 'Stone drying and industrial heating | Sepaveh Sanat Naghsh Jahan',
       seoDescription: copy.summary,
       blocks: [
@@ -115,10 +147,16 @@ try {
       { label: locale === 'fa-IR' ? 'تماس با ما' : 'Contact', target: 'contact' },
     ] });
     for (const product of copy.products) {
-      await add(locale, 'PRODUCT', product.slug, { title: product.title, summary: product.summary, image, category: 'industrial-heating' });
+      await add(locale, 'PRODUCT', product.slug, { title: product.title, summary: product.summary, body: descriptions[product.slug][locale === 'fa-IR' ? 0 : 1], image: photos[product.slug] || image, category: 'industrial-heating' });
     }
     for (const [index, title] of copy.projectNames.entries()) {
-      await add(locale, 'PROJECT', ['jahan-sang', 'yaghout', 'valiasr', 'shahin-stone', 'negin-stone', 'parseh-stone'][index], { title, image, location: locale === 'fa-IR' ? 'اصفهان، ایران' : 'Isfahan, Iran', completedAt: `202${index % 5}-0${(index % 8) + 1}-15`, client: title, summary: locale === 'fa-IR' ? 'طراحی، ساخت، نصب و راه‌اندازی کامل توسط تیم سپاوه صنعت.' : 'Complete design, fabrication, installation, and commissioning by Sepaveh Sanat.' });
+      const slug = ['jahan-sang', 'yaghout', 'valiasr', 'shahin-stone', 'negin-stone', 'parseh-stone'][index];
+      await add(locale, 'PROJECT', slug, {
+        title, image: photos[slug] || image,
+        summary: photos[slug]
+          ? (locale === 'fa-IR' ? 'نمونه خشک‌کن سنگ معرفی‌شده در وب‌سایت سپاوه صنعت.' : 'Stone dryer installation featured on the Sepaveh Sanat website.')
+          : (locale === 'fa-IR' ? 'نمونه آزمایشی برای نمایش ساختار صفحات پروژه.' : 'Example entry for the project portfolio.'),
+      });
     }
     const articles = locale === 'fa-IR' ? [
       ['stone-drying-guide', 'راهنمای انتخاب خشک‌کن سنگ', 'ظرفیت، نوع سوخت و ابعاد خط تولید سه عامل اصلی انتخاب یک خشک‌کن صنعتی هستند.'],
