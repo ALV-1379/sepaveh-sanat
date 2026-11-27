@@ -15,10 +15,11 @@ RUN npm run generate -w backend && mkdir /app/uploads && chown node:node /app/up
 USER node
 EXPOSE 3000
 
-FROM development AS dependencies
-USER root
-RUN npm prune --omit=dev --workspace backend --no-audit --ignore-scripts \
-    && node -e "if (!require('@prisma/client').PrismaClient) process.exit(1)"
+FROM runtime AS dependencies
+COPY package.json package-lock.json ./
+COPY frontend/package.json frontend/package.json
+COPY backend/package.json backend/package.json
+RUN --mount=type=secret,id=build_ca if [ -f /run/secrets/build_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/build_ca; fi; npm ci --omit=dev --workspace backend --no-audit --fetch-retries=1 --fetch-timeout=30000
 
 FROM ${NODE_RUNTIME_IMAGE} AS production
 WORKDIR /app
@@ -29,6 +30,7 @@ COPY --chown=node:node backend/package.json backend/package.json
 COPY --chown=node:node backend/src backend/src
 COPY --chown=node:node backend/prisma backend/prisma
 COPY --from=dependencies --chown=node:node /app/node_modules node_modules
+COPY --from=development --chown=node:node /app/node_modules/.prisma node_modules/.prisma
 RUN mkdir /app/uploads && chown node:node /app/uploads
 USER node
 EXPOSE 3000
