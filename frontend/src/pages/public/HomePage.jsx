@@ -64,6 +64,12 @@ export function HomePage({ data, locale, fa }) {
           locale={locale}
           collection="products"
         />
+        {data.body && (
+          <section className="block">
+            <h2>{fa ? 'درباره سپاوه صنعت' : 'About Sepaveh Sanat'}</h2>
+            <p className="prose-copy">{data.body}</p>
+          </section>
+        )}
         <StoneDryingBenefits fa={fa} locale={locale} />
         <CatalogShowcase fa={fa} />
         <EquipmentGallery fa={fa} />

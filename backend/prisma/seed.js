@@ -1,4 +1,9 @@
 import { readFile } from 'node:fs/promises';
+import {
+  englishArticles,
+  englishPages,
+  englishProductDetails,
+} from './englishContent.js';
 import { db } from '../src/db.js';
 import { storage } from '../src/modules/media.js';
 import { hashPassword } from '../src/modules/auth.js';
@@ -285,6 +290,7 @@ try {
     await add(locale, 'SETTINGS', 'site', { title: copy.name });
     await add(locale, 'PAGE', 'home', {
       title: copy.hero,
+      body: locale === 'en-US' ? englishPages.home : undefined,
       summary: copy.summary,
       image: photos['indirect-stone-dryer'],
       seoTitle:
@@ -382,13 +388,16 @@ try {
     });
     await add(locale, 'PAGE', 'about', {
       title: copy.about,
-      body: copy.aboutBody,
+      body: locale === 'en-US' ? englishPages.about : copy.aboutBody,
     });
     await add(locale, 'PAGE', 'contact', {
       title: copy.contact,
-      body: copy.contactBody,
+      body: locale === 'en-US' ? englishPages.contact : copy.contactBody,
     });
-    await add(locale, 'PAGE', 'quote', { title: copy.quote });
+    await add(locale, 'PAGE', 'quote', {
+      title: copy.quote,
+      body: locale === 'en-US' ? englishPages.quote : undefined,
+    });
     await add(locale, 'PAGE', 'privacy', {
       title: copy.privacy,
       body: copy.privacyBody,
@@ -398,6 +407,10 @@ try {
         locale === 'fa-IR'
           ? 'گرمایش و خشک‌کن صنعتی'
           : 'Industrial heating and drying',
+      body:
+        locale === 'en-US'
+          ? 'Explore equipment by the job it needs to do. Choose a dryer around the stone format and production rate, radiant heating around the target area, or industrial fans around the airflow and duct layout. Product pages list the information that helps us review your application.'
+          : undefined,
     });
     await add(locale, 'MENU', 'main', {
       title: 'Main navigation',
@@ -415,6 +428,7 @@ try {
           label: locale === 'fa-IR' ? 'پروژه‌ها' : 'Projects',
           target: 'projects',
         },
+        ...(locale === 'en-US' ? [{ label: 'Articles', target: 'news' }] : []),
         {
           label: locale === 'fa-IR' ? 'تماس با ما' : 'Contact',
           target: 'contact',
@@ -425,7 +439,10 @@ try {
       await add(locale, 'PRODUCT', product.slug, {
         title: product.title,
         summary: product.summary,
-        body: descriptions[product.slug][locale === 'fa-IR' ? 0 : 1],
+        body:
+          locale === 'en-US'
+            ? englishProductDetails[product.slug]
+            : descriptions[product.slug][0],
         image: photos[product.slug] || image,
         category: 'industrial-heating',
       });
@@ -442,6 +459,10 @@ try {
       await add(locale, 'PROJECT', slug, {
         title,
         image: photos[slug] || image,
+        body:
+          locale === 'en-US' && photos[slug]
+            ? `${title} is shown in the company’s installation portfolio. The project photograph provides a visual reference for the arrangement of stone-drying equipment in a working stone shop.\n\nIf you are planning a similar installation, share your load dimensions, handling method and available space. Those details help the team assess what would fit your site.`
+            : undefined,
         summary: photos[slug]
           ? locale === 'fa-IR'
             ? 'نمونه خشک‌کن سنگ معرفی‌شده در وب‌سایت سپاوه صنعت.'
@@ -491,7 +512,7 @@ try {
       await add(locale, 'ARTICLE', slug, {
         title,
         summary,
-        body: summary,
+        body: locale === 'en-US' ? englishArticles[slug] : summary,
         image,
       });
     const testimonials =
