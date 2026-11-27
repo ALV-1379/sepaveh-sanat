@@ -55,9 +55,12 @@ model Inquiry {
   id        String   @id @default(uuid())
   kind      String
   name      String
-  email     String
+  email     String?
   message   String
   product   String?
+  address   String?
+  phone     String?
+  channel   String?
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
   @@index([kind, createdAt])

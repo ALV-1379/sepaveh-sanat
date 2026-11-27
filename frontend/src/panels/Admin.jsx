@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { quoteChannels } from '../features/quoteChannels';
 import { Link, Route, Routes } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, useData } from '../app/api';
@@ -194,7 +195,18 @@ function Inquiries() {
           items.length ? (
             <div className="admin-list">
               {items.map(
-                ({ id, name, email, message, kind, product, read }) => (
+                ({
+                  id,
+                  name,
+                  email,
+                  message,
+                  kind,
+                  product,
+                  read,
+                  address,
+                  phone,
+                  channel,
+                }) => (
                   <article className="surface" key={id}>
                     <h2>
                       {kind === 'QUOTE' ? 'درخواست قیمت' : 'پیام تماس'} · {name}
@@ -204,6 +216,32 @@ function Inquiries() {
                       {product && ' · ' + product}
                     </p>
                     <p className="prose-copy">{message}</p>
+                    {kind === 'QUOTE' && (address || phone || channel) && (
+                      <dl className="quote-details">
+                        {address && (
+                          <div>
+                            <dt>آدرس</dt>
+                            <dd dir="auto">{address}</dd>
+                          </div>
+                        )}
+                        {phone && (
+                          <div>
+                            <dt>تلفن</dt>
+                            <dd>
+                              <a href={`tel:${phone}`} dir="ltr">
+                                {phone}
+                              </a>
+                            </dd>
+                          </div>
+                        )}
+                        {channel && (
+                          <div>
+                            <dt>روش پیگیری</dt>
+                            <dd>{quoteChannels[channel]?.[0]}</dd>
+                          </div>
+                        )}
+                      </dl>
+                    )}
                     <button
                       className="button outline"
                       disabled={change.isPending}

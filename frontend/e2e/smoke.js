@@ -16,8 +16,9 @@ const browser = await chromium.launch({
 });
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(E2E_BASE_URL);
-  await page.locator('.hero h1').waitFor();
+  await page.locator('.hero-slide.active h1').waitFor();
   assert.equal(await page.locator('html').getAttribute('dir'), 'rtl');
   await page.getByText('EN', { exact: true }).click();
   const englishRadio = page.getByRole('radio', { name: 'EN', exact: true });
@@ -27,7 +28,7 @@ try {
     .getByRole('heading', { name: /Industrial drying and heating/ })
     .waitFor();
   assert.equal(await page.locator('html').getAttribute('dir'), 'ltr');
-  const image = page.locator('.hero img');
+  const image = page.locator('.hero-slide.active img');
   await image.evaluate((element) => element.decode());
   assert.ok(await image.evaluate((element) => element.naturalWidth > 0));
   await page.getByRole('button', { name: 'Decline' }).click();
@@ -38,26 +39,30 @@ try {
     .getByRole('link', { name: 'Request a quotation', exact: true })
     .click();
   await page.getByLabel('Name').fill('Browser test');
-  await page.getByLabel('Email').fill('browser-test@example.com');
+  await page.getByLabel('Phone number').fill('09192414110');
   await page
-    .getByLabel('Message')
+    .getByLabel('Delivery or installation address')
+    .fill('Isfahan, Iran');
+  await page.getByRole('radio', { name: 'WhatsApp' }).check();
+  await page
+    .getByLabel('What products or services do you need?')
     .fill('Quotation form validation from a disposable browser test.');
-  await page.getByRole('button', { name: 'Send message' }).click();
-  await page.getByText('Your message was sent.').waitFor();
+  await page.getByRole('button', { name: 'Request a quotation' }).click();
+  await page.getByText(/Request received/).waitFor();
   await page.goto(E2E_BASE_URL + '/super-admin');
-  await page.getByLabel('Email').fill(E2E_EMAIL);
-  await page.getByLabel('Password').fill(E2E_PASSWORD);
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await page.getByRole('heading', { name: 'System overview' }).waitFor();
-  await page.getByRole('link', { name: 'System health', exact: true }).click();
+  await page.getByLabel('ایمیل').fill(E2E_EMAIL);
+  await page.getByLabel('رمز عبور').fill(E2E_PASSWORD);
+  await page.getByRole('button', { name: 'ورود', exact: true }).click();
+  await page.getByRole('heading', { name: 'نمای کلی سامانه' }).waitFor();
+  await page.getByRole('link', { name: 'سلامت سامانه', exact: true }).click();
   await page.getByText('available', { exact: true }).waitFor();
   await page.goto(E2E_BASE_URL + '/admin/content/PAGE');
-  await page.getByRole('heading', { name: 'Pages' }).waitFor();
-  await page.getByRole('button', { name: 'New entry' }).click();
-  await page.getByRole('button', { name: 'Add section', exact: true }).click();
-  await page.getByRole('button', { name: 'Duplicate', exact: true }).click();
+  await page.getByRole('heading', { name: 'صفحات' }).waitFor();
+  await page.getByRole('button', { name: 'افزودن مورد جدید' }).click();
+  await page.getByRole('button', { name: 'افزودن بخش', exact: true }).click();
+  await page.getByRole('button', { name: 'تکثیر', exact: true }).click();
   assert.equal(
-    await page.getByRole('button', { name: 'Duplicate', exact: true }).count(),
+    await page.getByRole('button', { name: 'تکثیر', exact: true }).count(),
     2,
   );
   console.log(

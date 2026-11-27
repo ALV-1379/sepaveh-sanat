@@ -2,6 +2,10 @@
 
 React corporate website and Express/PostgreSQL CMS in one JavaScript monorepo.
 
+**User guides:** [English](docs/USER-GUIDE.en.md) · [فارسی](docs/USER-GUIDE.fa.md)
+
+**AI handoff:** [Frontend skill](docs/skills/frontend/SKILL.md) · [Backend skill](docs/skills/backend/SKILL.md)
+
 | Directory         | Purpose                                                                  |
 | ----------------- | ------------------------------------------------------------------------ |
 | `frontend/`       | Vite, React Router, Tailwind, public site and two administration layouts |

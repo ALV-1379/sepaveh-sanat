@@ -124,13 +124,33 @@ publicContent.get('/content/:locale/:type{/:slug}', async (req, res) => {
   res.set('Cache-Control', 'public, max-age=30').json({ entries, total });
 });
 
-const inquiry = z.object({
-  kind: z.enum(['CONTACT', 'QUOTE']),
+const inquiryFields = {
   name: short.min(2),
-  email: z.email().max(254),
   message: text.min(10),
   product: slug.optional(),
-});
+};
+const email = z.email().max(254);
+const phone = z
+  .string()
+  .trim()
+  .max(32)
+  .transform((value) =>
+    value
+      .replace(/[۰-۹٠-٩]/g, (digit) => String(digit.charCodeAt(0) & 15))
+      .replace(/[\s()-]/g, ''),
+  )
+  .pipe(z.string().regex(/^\+?\d{7,15}$/));
+export const inquiry = z.discriminatedUnion('kind', [
+  z.object({ ...inquiryFields, kind: z.literal('CONTACT'), email }),
+  z.object({
+    ...inquiryFields,
+    kind: z.literal('QUOTE'),
+    email: email.optional(),
+    address: z.string().trim().min(5).max(500),
+    phone,
+    channel: z.enum(['EITAA', 'TELEGRAM', 'WHATSAPP', 'PHONE']),
+  }),
+]);
 publicContent.post(
   '/inquiries',
   rateLimit({ windowMs: 15 * 60_000, limit: 8 }),

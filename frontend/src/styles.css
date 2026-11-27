@@ -35,8 +35,10 @@
   --forest: #315f45;
   --forest-deep: #173d2c;
   --forest-soft: #eaf2e9;
-  --gold: #e4bd25;
-  --gold-light: #ffe57a;
+  --gold: #ffcd11;
+  --gold-light: #ffe584;
+  --machine-gray: #e6e8e9;
+  --graphite: #283034;
   --cream: #fffdf4;
   --shadow: 0 18px 50px #173d2c18;
 }
@@ -519,6 +521,53 @@ h3 {
   object-fit: cover;
   object-position: center;
   margin-inline: auto;
+}
+.detail-image {
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: var(--machine-gray);
+}
+.detail .cards > img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: var(--machine-gray);
+  border-radius: 16px;
+}
+.quote-form {
+  width: 100%;
+  border-block-start: 4px solid var(--gold);
+  color: var(--graphite);
+}
+.quote-channels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
+  gap: 0.6rem;
+}
+.quote-channels legend {
+  margin-block-end: 0.6rem;
+  font-weight: 700;
+}
+.quote-channels label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem;
+  background: var(--machine-gray);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.quote-channels label:has(:checked) {
+  border-color: #876700;
+  background: var(--gold-light);
+}
+.quote-channels input {
+  accent-color: var(--graphite);
+}
+.quote-details dd {
+  overflow-wrap: anywhere;
 }
 .prose-copy {
   white-space: pre-wrap;

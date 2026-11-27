@@ -10,7 +10,32 @@ const { createApp } = await import('../src/app.js');
 const { db } = await import('../src/db.js');
 const { storage } = await import('../src/modules/media.js');
 const { credentials, hashPassword } = await import('../src/modules/auth.js');
-const { contentEntry } = await import('../src/modules/content.js');
+const { contentEntry, inquiry } = await import('../src/modules/content.js');
+
+test('quotations require address, phone and a supported channel', () => {
+  const details = { name: 'Test customer', message: 'A dryer for two pallets' };
+  assert.equal(inquiry.safeParse({ ...details, kind: 'QUOTE' }).success, false);
+  const quote = {
+    ...details,
+    kind: 'QUOTE',
+    address: 'Isfahan, Iran',
+    phone: '۰۹۱۹ ۲۴۱ ۴۱۱۰',
+    channel: 'EITAA',
+  };
+  assert.equal(inquiry.parse(quote).phone, '09192414110');
+  assert.equal(
+    inquiry.safeParse({ ...quote, channel: 'EMAIL' }).success,
+    false,
+  );
+  assert.equal(
+    inquiry.safeParse({
+      ...details,
+      kind: 'CONTACT',
+      email: 'customer@example.com',
+    }).success,
+    true,
+  );
+});
 const origin = 'http://localhost:5173';
 const server = createApp({ origin }).listen(0, '127.0.0.1');
 const id = randomUUID();
@@ -129,6 +154,25 @@ test(
       });
       assert.equal(refresh.status, 200);
       const session = cookie(refresh);
+      const quote = await call('/public/inquiries', {
+        method: 'POST',
+        body: {
+          kind: 'QUOTE',
+          name: id,
+          message: 'A dryer for two pallets',
+          address: 'Isfahan, Iran',
+          phone: '۰۹۱۹۲۴۱۴۱۱۰',
+          channel: 'WHATSAPP',
+        },
+      });
+      assert.equal(quote.status, 201);
+      assert.equal((await call('/admin/inquiries')).status, 401);
+      const inbox = await call('/admin/inquiries', { cookie: session });
+      assert.equal(inbox.status, 200);
+      const savedQuote = (await inbox.json()).find((item) => item.name === id);
+      assert.equal(savedQuote.phone, '09192414110');
+      assert.equal(savedQuote.address, 'Isfahan, Iran');
+      assert.equal(savedQuote.channel, 'WHATSAPP');
       assert.equal(
         (await call('/auth/refresh', { method: 'POST', cookie: old })).status,
         401,
@@ -211,6 +255,7 @@ test(
       );
       assert.equal((await call('/auth/me', { cookie: session })).status, 401);
     } finally {
+      await db.inquiry.deleteMany({ where: { name: id } });
       await db.audit.deleteMany({ where: { actorId: admin.id } });
       if (contentId) await db.content.delete({ where: { id: contentId } });
       if (media) {

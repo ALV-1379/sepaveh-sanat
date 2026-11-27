@@ -142,7 +142,7 @@ const examples = {
     contactBody:
       'Address: Mahmoudabad Industrial Estate, Isfahan, Iran\nConsultation and orders: +98 919 241 4110\nEmail: info@sepavehsanat.com',
     privacyBody:
-      'Contact details are collected when you submit an inquiry. Optional analytics collect page paths, device category, and an anonymous browser identifier. You can change your choice at any time.',
+      'When you request a quotation, we collect your phone number, address, preferred contact method, and request details so our sales team can respond. General contact requests use your email. Optional analytics collect page paths, device category, and an anonymous browser identifier. You can change your choice at any time.',
   },
   'fa-IR': {
     name: 'سپاوه صنعت نقش جهان',
@@ -203,7 +203,7 @@ const examples = {
     contactBody:
       'آدرس: اصفهان، شهرک صنعتی محمودآباد، شرکت سپاوه صنعت نقش جهان\nتلفن مشاوره و سفارش: ۰۹۱۹ ۲۴۱ ۴۱۱۰\nایمیل: info@sepavehsanat.com',
     privacyBody:
-      'اطلاعات تماس هنگام ارسال درخواست دریافت می‌شود. تحلیل اختیاری شامل مسیر صفحه، نوع دستگاه و شناسه ناشناس مرورگر است. می‌توانید انتخاب خود را تغییر دهید.',
+      'برای پیگیری پیش‌فاکتور، شماره تلفن، آدرس، روش تماس انتخابی و شرح درخواست دریافت می‌شود. برای پیام‌های عمومی از ایمیل استفاده می‌کنیم. تحلیل اختیاری شامل مسیر صفحه، نوع دستگاه و شناسه ناشناس مرورگر است. می‌توانید انتخاب خود را تغییر دهید.',
   },
 };
 async function add(locale, type, slug, draft) {
