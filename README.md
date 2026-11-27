@@ -4,6 +4,8 @@ React corporate website and Express/PostgreSQL CMS in one JavaScript monorepo.
 
 **User guides:** [English](docs/USER-GUIDE.en.md) · [فارسی](docs/USER-GUIDE.fa.md)
 
+**Developer setup:** [Local runbook](docs/DEVELOPER-RUNBOOK.md)
+
 **AI handoff:** [Complete project guide](docs/AI-HANDOFF.md) · [Frontend skill](docs/skills/frontend/SKILL.md) · [Backend skill](docs/skills/backend/SKILL.md)
 
 | Directory         | Purpose                                                                  |
