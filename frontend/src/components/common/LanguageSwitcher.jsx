@@ -15,18 +15,22 @@ export function LanguageSwitcher({ locale, path, query }) {
     navigate(publicPath(nextLocale, path) + (search ? `?${search}` : ''));
   }
 
-  return <fieldset className="language-switcher">
-    <legend>Language</legend>
-    <Globe2 aria-hidden="true" size={16} />
-    {languages.map((language) => <label key={language.locale}>
-      <input
-        checked={locale === language.locale}
-        name="site-language"
-        onChange={() => changeLanguage(language.locale)}
-        type="radio"
-        value={language.locale}
-      />
-      <span>{language.label}</span>
-    </label>)}
-  </fieldset>;
+  return (
+    <fieldset className="language-switcher">
+      <legend>Language</legend>
+      <Globe2 aria-hidden="true" size={16} />
+      {languages.map((language) => (
+        <label key={language.locale}>
+          <input
+            checked={locale === language.locale}
+            name="site-language"
+            onChange={() => changeLanguage(language.locale)}
+            type="radio"
+            value={language.locale}
+          />
+          <span>{language.label}</span>
+        </label>
+      ))}
+    </fieldset>
+  );
 }

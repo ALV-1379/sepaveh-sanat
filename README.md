@@ -2,12 +2,12 @@
 
 React corporate website and Express/PostgreSQL CMS in one JavaScript monorepo.
 
-| Directory | Purpose |
-| --- | --- |
-| `frontend/` | Vite, React Router, Tailwind, public site and two administration layouts |
-| `backend/` | REST API, authentication, CMS, local storage and analytics |
-| `backend/prisma/` | Data model, SQL migrations, first-admin bootstrap, sample content |
-| `infrastructure/` | Nginx proxy, static server and backup script |
+| Directory         | Purpose                                                                  |
+| ----------------- | ------------------------------------------------------------------------ |
+| `frontend/`       | Vite, React Router, Tailwind, public site and two administration layouts |
+| `backend/`        | REST API, authentication, CMS, local storage and analytics               |
+| `backend/prisma/` | Data model, SQL migrations, first-admin bootstrap, sample content        |
+| `infrastructure/` | Nginx proxy, static server and backup script                             |
 
 ## Windows and WSL2
 
@@ -25,9 +25,23 @@ The Dockerfiles use anonymous public images from Microsoft Container Registry fo
 
 ## Development
 
+In Windows Command Prompt, run these commands from your clone. If you already have a `.env`, keep it and skip the `copy` command.
+
+```cmd
+git switch codex/initial-implementation
+git pull --ff-only
+copy .env.example .env
+if not exist uploads mkdir uploads
+notepad .env
+```
+
+Set `UPLOAD_HOST_DIR=./uploads`, enter your database password and JWT secret, and use the same database password in `DATABASE_URL`. Start Docker Desktop in Linux containers mode and check that `docker version` shows a Server section.
+
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build --wait
 ```
+
+For source checks with Node.js 22.12 or newer, run `npm ci`, then `npm run lint` and `npm run format:check`. Run `npm run format` to apply Prettier formatting.
 
 Open `http://localhost:8080/` for Persian, `/en/` for English, `/admin` for content and `/super-admin` for system administration. Development startup seeds editable company content based on the public information at `https://sepaveh.com/`, together with English translations and generated factory imagery. Its upserts preserve existing entries. Source edits hot-reload. Dependency and Prisma schema edits require rebuilding the images. Containers use their own Linux dependencies.
 

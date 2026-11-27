@@ -1,9 +1,19 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright-core';
 
-const { BROWSER_PATH, E2E_EMAIL, E2E_PASSWORD, E2E_BASE_URL = 'http://localhost:5173' } = process.env;
-assert.ok(E2E_EMAIL && E2E_PASSWORD, 'Supply credentials for a disposable Super Admin account');
-const browser = await chromium.launch({ executablePath: BROWSER_PATH || '/usr/bin/chromium' });
+const {
+  BROWSER_PATH,
+  E2E_EMAIL,
+  E2E_PASSWORD,
+  E2E_BASE_URL = 'http://localhost:5173',
+} = process.env;
+assert.ok(
+  E2E_EMAIL && E2E_PASSWORD,
+  'Supply credentials for a disposable Super Admin account',
+);
+const browser = await chromium.launch({
+  executablePath: BROWSER_PATH || '/usr/bin/chromium',
+});
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await page.goto(E2E_BASE_URL);
@@ -13,7 +23,9 @@ try {
   const englishRadio = page.getByRole('radio', { name: 'EN', exact: true });
   await englishRadio.waitFor({ state: 'attached' });
   assert.equal(await englishRadio.isChecked(), true);
-  await page.getByRole('heading', { name: /Industrial drying and heating/ }).waitFor();
+  await page
+    .getByRole('heading', { name: /Industrial drying and heating/ })
+    .waitFor();
   assert.equal(await page.locator('html').getAttribute('dir'), 'ltr');
   const image = page.locator('.hero img');
   await image.evaluate((element) => element.decode());
@@ -22,10 +34,14 @@ try {
   await page.getByRole('link', { name: 'Explore products' }).click();
   await page.getByRole('link', { name: 'Indirect stone dryer' }).click();
   await page.getByRole('heading', { name: 'Indirect stone dryer' }).waitFor();
-  await page.getByRole('link', { name: 'Request a quotation', exact: true }).click();
+  await page
+    .getByRole('link', { name: 'Request a quotation', exact: true })
+    .click();
   await page.getByLabel('Name').fill('Browser test');
   await page.getByLabel('Email').fill('browser-test@example.com');
-  await page.getByLabel('Message').fill('Quotation form validation from a disposable browser test.');
+  await page
+    .getByLabel('Message')
+    .fill('Quotation form validation from a disposable browser test.');
   await page.getByRole('button', { name: 'Send message' }).click();
   await page.getByText('Your message was sent.').waitFor();
   await page.goto(E2E_BASE_URL + '/super-admin');
@@ -40,8 +56,13 @@ try {
   await page.getByRole('button', { name: 'New entry' }).click();
   await page.getByRole('button', { name: 'Add section', exact: true }).click();
   await page.getByRole('button', { name: 'Duplicate', exact: true }).click();
-  assert.equal(await page.getByRole('button', { name: 'Duplicate', exact: true }).count(), 2);
-  console.log('Browser smoke passed: localization, navigation, media, quotation, sign-in, health and builder.');
+  assert.equal(
+    await page.getByRole('button', { name: 'Duplicate', exact: true }).count(),
+    2,
+  );
+  console.log(
+    'Browser smoke passed: localization, navigation, media, quotation, sign-in, health and builder.',
+  );
 } finally {
   await browser.close();
 }

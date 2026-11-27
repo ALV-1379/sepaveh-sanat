@@ -17,7 +17,7 @@ install:
 lint:
   stage: lint
   needs: [install]
-  script: [npm run lint]
+  script: [npm run lint, npm run format:check]
 
 test:
   stage: test
@@ -53,7 +53,7 @@ docker-build:
     - docker build -f "$COMPONENT/Dockerfile" -t "$COMPONENT:$CI_COMMIT_SHA" .
     - docker save "$COMPONENT:$CI_COMMIT_SHA" -o "$COMPONENT.tar"
   artifacts:
-    paths: ["$COMPONENT.tar"]
+    paths: ['$COMPONENT.tar']
     expire_in: 1 day
 
 push:

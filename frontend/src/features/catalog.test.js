@@ -6,7 +6,9 @@ describe('localized paths', () => {
   it('uses Persian at the root and prefixes English', () => {
     expect(publicPath('fa-IR', 'products')).toBe('/products');
     expect(publicPath('en-US', 'products')).toBe('/en/products');
-    expect(contentUrl('fa-IR', 'PAGE', 'home')).toBe('/public/content/fa-IR/PAGE/home');
+    expect(contentUrl('fa-IR', 'PAGE', 'home')).toBe(
+      '/public/content/fa-IR/PAGE/home',
+    );
   });
 });
 

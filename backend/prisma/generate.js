@@ -8,7 +8,12 @@ const { getGenerators } = require('@prisma/internals');
 const cliCommand = 'prisma';
 const generators = await getGenerators({
   schemaPath: fileURLToPath(new URL('./schema.prisma', import.meta.url)),
-  registry: { 'prisma-client-js': { type: 'in-process', generator: new PrismaClientJsGenerator({ cliCommand }) } },
+  registry: {
+    'prisma-client-js': {
+      type: 'in-process',
+      generator: new PrismaClientJsGenerator({ cliCommand }),
+    },
+  },
   cliCommand,
 });
 

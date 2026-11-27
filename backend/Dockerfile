@@ -1,4 +1,5 @@
 ARG NODE_IMAGE=mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm
+ARG NODE_RUNTIME_IMAGE=public.ecr.aws/docker/library/node:22-bookworm-slim
 FROM ${NODE_IMAGE} AS runtime
 USER root
 WORKDIR /app
@@ -19,7 +20,9 @@ USER root
 RUN npm prune --omit=dev --workspace backend --no-audit --ignore-scripts \
     && node -e "if (!require('@prisma/client').PrismaClient) process.exit(1)"
 
-FROM runtime AS production
+FROM ${NODE_RUNTIME_IMAGE} AS production
+WORKDIR /app
+ENV NODE_ENV=production
 COPY --chown=node:node package.json ./
 COPY --chown=node:node frontend/package.json frontend/package.json
 COPY --chown=node:node backend/package.json backend/package.json
@@ -29,4 +32,4 @@ COPY --from=dependencies --chown=node:node /app/node_modules node_modules
 RUN mkdir /app/uploads && chown node:node /app/uploads
 USER node
 EXPOSE 3000
-CMD ["npm", "start", "-w", "backend"]
+CMD ["node", "backend/src/server.js"]
