@@ -20,6 +20,11 @@ try {
   await page.goto(E2E_BASE_URL);
   await page.locator('.hero-slide.active h1').waitFor();
   assert.equal(await page.locator('html').getAttribute('dir'), 'rtl');
+  await page
+    .getByRole('heading', {
+      name: 'خشک‌کردن کنترل‌شده، سنگ آماده‌تر برای فروش',
+    })
+    .waitFor();
   await page.getByText('EN', { exact: true }).click();
   const englishRadio = page.getByRole('radio', { name: 'EN', exact: true });
   await englishRadio.waitFor({ state: 'attached' });
@@ -28,6 +33,11 @@ try {
     .getByRole('heading', { name: /Industrial drying and heating/ })
     .waitFor();
   assert.equal(await page.locator('html').getAttribute('dir'), 'ltr');
+  await page
+    .getByRole('heading', {
+      name: 'Controlled drying helps prepare stone for sale',
+    })
+    .waitFor();
   const image = page.locator('.hero-slide.active img');
   await image.evaluate((element) => element.decode());
   assert.ok(await image.evaluate((element) => element.naturalWidth > 0));
@@ -36,8 +46,23 @@ try {
   await page.getByRole('link', { name: 'Indirect stone dryer' }).click();
   await page.getByRole('heading', { name: 'Indirect stone dryer' }).waitFor();
   await page
-    .getByRole('link', { name: 'Request a quotation', exact: true })
-    .click();
+    .getByRole('heading', { name: 'Offer buyers more consistent batches' })
+    .waitFor();
+  const downloadLink = page.getByRole('link', {
+    name: 'Download catalog (PDF)',
+    exact: true,
+  });
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    downloadLink.click(),
+  ]);
+  assert.equal(await download.failure(), null);
+  assert.match(download.suggestedFilename(), /\.pdf$/);
+  await page.getByRole('link', { name: 'Get help choosing a dryer' }).click();
+  assert.equal(
+    new URL(page.url()).searchParams.get('product'),
+    'indirect-stone-dryer',
+  );
   await page.getByLabel('Name').fill('Browser test');
   await page.getByLabel('Phone number').fill('09192414110');
   await page
@@ -56,6 +81,16 @@ try {
   await page.getByRole('heading', { name: 'نمای کلی سامانه' }).waitFor();
   await page.getByRole('link', { name: 'سلامت سامانه', exact: true }).click();
   await page.getByText('available', { exact: true }).waitFor();
+  await page.goto(E2E_BASE_URL + '/admin/inquiries');
+  const request = page
+    .getByRole('article')
+    .filter({
+      hasText: 'Quotation form validation from a disposable browser test.',
+    })
+    .first();
+  await request.getByText('09192414110', { exact: true }).waitFor();
+  await request.getByText('Isfahan, Iran', { exact: true }).waitFor();
+  await request.getByText('واتس‌اپ', { exact: true }).waitFor();
   await page.goto(E2E_BASE_URL + '/admin/content/PAGE');
   await page.getByRole('heading', { name: 'صفحات' }).waitFor();
   await page.getByRole('button', { name: 'افزودن مورد جدید' }).click();
@@ -65,6 +100,8 @@ try {
     await page.getByRole('button', { name: 'تکثیر', exact: true }).count(),
     2,
   );
+  await page.goto(E2E_BASE_URL + '/en/missing-page');
+  await page.getByRole('heading', { name: '404' }).waitFor();
   console.log(
     'Browser smoke passed: localization, navigation, media, quotation, sign-in, health and builder.',
   );
